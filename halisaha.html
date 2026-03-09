@@ -2,6 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Halı Saha Katılım</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -142,6 +143,7 @@
     font-size: 0.95rem;
     transition: border-color 0.2s, box-shadow 0.2s;
     outline: none;
+    width: 100%;
   }
 
   input:focus, select:focus, textarea:focus {
@@ -152,7 +154,7 @@
   select option { background: var(--dark); }
   textarea { resize: none; height: 70px; }
 
-  #reasonGroup { display: none; }
+  #reasonGroup { display: none; margin-top: 12px; }
 
   .btn {
     width: 100%;
@@ -254,7 +256,6 @@
 
   .p-reason { font-size: 0.8rem; color: rgba(255,255,255,0.45); font-style: italic; }
 
-  /* PITCH */
   .pitch-wrap {
     background: #1a7a3c;
     border-radius: 14px;
@@ -325,7 +326,6 @@
     font-weight: 600;
     text-align: center;
     border: 1px solid rgba(255,255,255,0.1);
-    backdrop-filter: blur(4px);
   }
 
   .team-a .pitch-player { border-color: rgba(116,185,255,0.3); }
@@ -353,6 +353,7 @@
     transition: transform 0.3s ease;
     z-index: 999;
     box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    white-space: nowrap;
   }
 
   .toast.show { transform: translateX(-50%) translateY(0); }
@@ -383,7 +384,6 @@
 
 <div class="container">
 
-  <!-- FORM -->
   <div class="card">
     <div class="card-title">🖊 Katılım Formu</div>
     <div class="form-row">
@@ -399,14 +399,13 @@
         </select>
       </div>
     </div>
-    <div class="form-group" id="reasonGroup" style="margin-top:12px;">
+    <div class="form-group" id="reasonGroup">
       <label>Neden gelemiyor?</label>
       <textarea id="reason" placeholder="Sebebini yaz..."></textarea>
     </div>
     <button class="btn" onclick="submitForm()">GÖNDER</button>
   </div>
 
-  <!-- STATS + LIST -->
   <div class="card">
     <div class="card-title">📋 Katılım Listesi</div>
     <div class="stats-row">
@@ -428,11 +427,10 @@
     </ul>
   </div>
 
-  <!-- TEAMS -->
   <div class="card">
     <div class="card-title">🏟 Takımlar</div>
     <div class="pitch-wrap">
-      <div class="pitch-inner" id="pitchInner">
+      <div class="pitch-inner">
         <div class="team-side team-a">
           <div class="team-label">🔵 Takım A</div>
           <div id="teamA"><div class="empty-pitch">Oyuncu yok</div></div>
@@ -450,9 +448,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  // In-memory storage (works in all environments)
   let data = [];
-  let teamCounter = 0; // balanced team assignment
 
   function toggleReason() {
     const status = document.getElementById("status").value;
@@ -484,14 +480,14 @@
 
     let team = null;
     if (status === "geliyor") {
-      // Balanced alternating assignment
       const coming = data.filter(p => p.status === "geliyor");
-      team = coming.filter(p => p.team === "A").length <= coming.filter(p => p.team === "B").length ? "A" : "B";
+      const countA = coming.filter(p => p.team === "A").length;
+      const countB = coming.filter(p => p.team === "B").length;
+      team = countA <= countB ? "A" : "B";
     }
 
     data.push({ name, status, reason, team });
 
-    // Reset form
     document.getElementById("name").value = "";
     document.getElementById("reason").value = "";
     document.getElementById("status").value = "geliyor";
